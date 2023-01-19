@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 class Contactmain {
@@ -17,7 +18,7 @@ class Contactmain {
       onCreate: (db, version) {
         // Run the CREATE TABLE statement on the database.
         return db.execute(
-          'CREATE TABLE Contacts(id INTEGER PRIMARY KEY, nom TEXT, prenom TEXT,mail TEXT,lieu TEXT,tel TEXT)',
+          'CREATE TABLE Contacts(id INTEGER PRIMARY KEY, nom TEXT, prenom TEXT,mail TEXT,lieu TEXT,tel TEXT,photo TEXT)',
         );
       },
       // Set the version. This executes the onCreate function and provides a
@@ -46,6 +47,7 @@ class Contactmain {
     final List<Map<String, dynamic>> maps = await db.query('contacts');
 
     // Convert the List<Map<String, dynamic> into a List<Dog>.
+
     return List.generate(maps.length, (i) {
       return Contacts(
         id: maps[i]['id'],
@@ -53,7 +55,8 @@ class Contactmain {
         prenom: maps[i]['prenom'],
         mail: maps[i]['mail'],
         lieu: maps[i]['lieu'],
-        tel: maps[i]['tel']
+        tel: maps[i]['tel'],
+        photo: maps[i]['photo']
       );
     });
   }
@@ -112,6 +115,7 @@ class Contacts {
   final String mail;
   final String lieu;
   final String tel;
+  final String photo;
 
   const Contacts({
     required this.id,
@@ -120,6 +124,7 @@ class Contacts {
     required this.mail,
     required this.lieu,
     required this.tel,
+    required this.photo,
   });
 
   Map<String, dynamic> toMap() {
@@ -130,12 +135,13 @@ class Contacts {
       'mail': mail,
       'lieu': lieu,
       'tel': tel,
+      'photo': photo,
     };
   }
 
   @override
   String toString() {
-    return 'contact{id: $id, name: $nom, age: $prenom , mail: $mail, lieu: $lieu, tel: $tel}';
+    return 'contact{id: $id, name: $nom, age: $prenom , mail: $mail, lieu: $lieu, tel: $tel, photo: $photo}';
   }
 
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'contact_page.dart';
 import 'model/db_contact.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class ContactAjouter extends StatefulWidget {
   final Contacts? contact;
@@ -17,6 +19,65 @@ class ContactAjouter extends StatefulWidget {
 }
 
 class _ContactAjouterState extends State<ContactAjouter> {
+
+  XFile? image;
+
+  final ImagePicker picker = ImagePicker();
+
+  Future getImage(ImageSource media) async {
+    var img = await picker.pickImage(source: media);
+
+    if (this.mounted) {
+      setState(() {
+        image = img;
+      });
+    }
+  }
+
+  void myAlert() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            title: Text('Veuillez selectionner le type de media'),
+            content: Container(
+              height: MediaQuery.of(context).size.height / 6,
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    //if user click this button, user can upload image from gallery
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getImage(ImageSource.gallery);
+                    },
+                    child: Row(
+                      children: const [
+                        Icon(Icons.image),
+                        Text('Depuis la galerie'),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    //if user click this button. user can upload image from camera
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getImage(ImageSource.camera);
+                    },
+                    child: Row(
+                      children: const [
+                        Icon(Icons.camera),
+                        Text('Prendre une photo'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
 
  // List<Contact> contacts = [];
   Contacts? contact = const ContactAjouter().Getcontact();
@@ -50,9 +111,28 @@ class _ContactAjouterState extends State<ContactAjouter> {
         padding: const EdgeInsets.all(8.8),
         child: Column(
           children: <Widget>[
-            const ImageIcon(
-              AssetImage('assets/image1.png'),
-              size: 120,
+            image != null
+                ? GestureDetector(
+              onTap: () {
+                myAlert();
+              }, // Image tapped
+              child: Image.file(
+                File(image!.path),
+                fit: BoxFit.cover, // Fixes border issues
+                width: 110.0,
+                height: 110.0,
+              ),
+            )
+                : GestureDetector(
+              onTap: () {
+                myAlert();
+              }, // Image tapped
+              child: Image.asset(
+                'assets/image1.png',
+                fit: BoxFit.cover, // Fixes border issues
+                width: 110.0,
+                height: 110.0,
+              ),
             ),
              Expanded(
               child: TextField(
@@ -122,10 +202,24 @@ class _ContactAjouterState extends State<ContactAjouter> {
                     if(nom.isEmpty || prenom.isEmpty || mail.isEmpty || lieu.isEmpty || tel.isEmpty ){
                       return;
                     }
-
-
-                    final Contacts model = Contacts(nom: nom, prenom: prenom, mail: mail, lieu: lieu, tel: tel, id: contact?.id);
-
+                    final Contacts model;
+                    if(image != null) {
+                      model = Contacts(nom: nom,
+                          prenom: prenom,
+                          mail: mail,
+                          lieu: lieu,
+                          tel: tel,
+                          photo: image!.path,
+                          id: contact?.id);
+                    } else {
+                       model = Contacts(nom: nom,
+                          prenom: prenom,
+                          mail: mail,
+                          lieu: lieu,
+                          tel: tel,
+                          photo: "default",
+                          id: contact?.id);
+                    }
                       await Contactmain.insertContact(model);
 
                     Navigator.push(context,
