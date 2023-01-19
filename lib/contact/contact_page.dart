@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:projet_contact/contact/contact_ajout.dart';
 import 'package:projet_contact/contact/model/db_contact.dart';
@@ -6,7 +9,7 @@ import 'package:projet_contact/contact/widgets/message_input.dart';
 
 import 'contact_detail.dart';
 import 'model/contact.dart';
-List<String> allNames = ["ahmed", "ali", "john", "user"];
+List<String> allNames = [];
 class ContactList extends StatefulWidget {
   const ContactList({Key? key}) : super(key: key);
   @override
@@ -60,10 +63,15 @@ class _ContactListState extends State<ContactList> {
                       return Center(child: Text(snapshot.error.toString()));
                     } else if (snapshot.hasData){
                       if (snapshot.data != null){
-
+                        var length = snapshot.data?.length?.toInt() ?? 0;
+                        for (var i = 0; i < length; i++) {
+                       allNames.add(snapshot.data![i].nom+" "+snapshot.data![i].prenom);
+                     }
                         return ListView.builder(
+
                             itemCount: snapshot.data?.length,
                             itemBuilder: (context, index) => ContactTile(
+
                                 message: snapshot.data![index].nom,
                                 user: snapshot.data![index].prenom,
                                 onPressed: (){
@@ -136,11 +144,13 @@ class CustomSearchDelegate extends SearchDelegate {
     return Container(
       margin: EdgeInsets.all(20),
       child: ListView(
+
           padding: EdgeInsets.only(top: 8, bottom: 8),
           scrollDirection: Axis.vertical,
           children: List.generate(suggestion.length, (index) {
             var item = suggestion[index];
             return Card(
+
               color: Colors.white,
               child: Container(padding: EdgeInsets.all(16), child: Text(item)),
             );
@@ -170,6 +180,17 @@ class CustomSearchDelegate extends SearchDelegate {
                 TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                 children: [
                   TextSpan(
+                    recognizer: TapGestureRecognizer()..onTap = () {
+
+                      //  Navigator.of(context).push(
+                        //    MaterialPageRoute(
+                          //      builder: (context)=> ContactDetail(contact: "snapshot.data![index]")
+
+                            //)
+                        //);
+                        // Navigator.push(context,MaterialPageRoute(builder: builder))
+
+                    },
                     text: suggestionList[index].substring(query.length),
                     style: TextStyle(color: Color(0xff727272)),
                   )
