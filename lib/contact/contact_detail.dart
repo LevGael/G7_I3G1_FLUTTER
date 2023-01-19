@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:projet_contact/contact/model/db_contact.dart';
 
 import 'model/contact.dart';
-
+import 'dart:io';
 class ContactDetail extends StatefulWidget {
   const ContactDetail({Key? key,
-  required this.nom,required this.prenom,
-  required this.mail,required this.lieux,
-    required this.numero,required this.photo}) : super(key: key);
-  final String nom;
-  final String prenom;
-  final String mail;
-  final String lieux;
-  final int numero;
-  final String photo;
+  required this.contact}) : super(key: key);
+  final Contacts contact;
 
   @override
   State<ContactDetail> createState() => _ContactDetailState();
@@ -36,8 +30,17 @@ class _ContactDetailState extends State<ContactDetail> {
             Padding(
                 padding: const EdgeInsets.all(9),
                 child:ClipOval( //no need to provide border radius to make circular image
-                  child: Image.asset(
-                    "assets/${widget.photo}",
+                  child: widget.contact.photo == "default"
+                      ?
+                  Image.asset(
+                    'assets/image1.png',
+                    fit: BoxFit.cover, // Fixes border issues
+                    width: 150.0,
+                    height: 150.0,
+                  )
+                  :
+                  Image.file(
+                    File(widget.contact.photo),
                     height: 150.0,
                     width: 150.0,
                     fit:BoxFit.cover, //change image fill type
@@ -45,7 +48,7 @@ class _ContactDetailState extends State<ContactDetail> {
                 )
             ),
             Card(
-              child: Text(widget.nom, textAlign: TextAlign.center, style: const TextStyle(
+              child: Text(widget.contact.nom, textAlign: TextAlign.center, style: const TextStyle(
                   fontSize: 26.0
               )),
             ),
@@ -54,7 +57,7 @@ class _ContactDetailState extends State<ContactDetail> {
             ),
             Card(
               child: ListTile(
-                title: Text('Tel: ${widget.numero}', style: const TextStyle(
+                title: Text('Tel: ${widget.contact.tel}', style: const TextStyle(
                     fontSize: 26.0
                 )),
               ),
@@ -64,28 +67,28 @@ class _ContactDetailState extends State<ContactDetail> {
             ),
             Card(
               child: ListTile(
-                title: Text('Nom: ${widget.nom}', style: const TextStyle(
+                title: Text('Nom: ${widget.contact.nom}', style: const TextStyle(
                     fontSize: 26.0
                 )),
               ),
             ),
             Card(
               child: ListTile(
-                title: Text('Prenom: ${widget.prenom}', style: const TextStyle(
+                title: Text('Prenom: ${widget.contact.prenom}', style: const TextStyle(
                     fontSize: 26.0
                 )),
               ),
             ),
             Card(
               child: ListTile(
-                title: Text('Mail: ${widget.mail}', style: const TextStyle(
+                title: Text('Mail: ${widget.contact.mail}', style: const TextStyle(
                     fontSize: 26.0
                 )),
               ),
             ),
             Card(
               child: ListTile(
-                title: Text('Lieux: ${widget.lieux}', style: const TextStyle(
+                title: Text('Lieux: ${widget.contact.lieu}', style: const TextStyle(
                     fontSize: 26.0
                            // ignore: prefer_const_constructors
        )),
@@ -101,7 +104,8 @@ class _ContactDetailState extends State<ContactDetail> {
                       style: ButtonStyle(
                         foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
                       ),
-                      onPressed: () { },
+                      onPressed: () async {
+                      },
                       child: const Text('  Appel  ', style: TextStyle(
                           fontSize: 26.0
                       )),

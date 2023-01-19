@@ -6,54 +6,19 @@ import 'package:projet_contact/contact/widgets/message_input.dart';
 
 import 'contact_detail.dart';
 import 'model/contact.dart';
-
+List<String> allNames = ["ahmed", "ali", "john", "user"];
 class ContactList extends StatefulWidget {
   const ContactList({Key? key}) : super(key: key);
   @override
   State<ContactList> createState() => _ContactListState();
 
   static void GetListe() async  {
-    var contacttest = const Contacts(
-        id: 0,
-        nom: 'Dechamp',
-        prenom: 'Paul',
-        mail: 'Dechamp@mail.com',
-        lieu: 'Limoges',
-        tel: "0650467791",
-    );
 
-    Contactmain.insertContact(contacttest);
   }
 }
 
 class _ContactListState extends State<ContactList> {
   //List<Contacts> Lescontacts = Contactmain.getcontacts() as List<Contacts>;
-
-
-
-
-  final List<Contact> _message = [];
- // List<Contact> contacts = [
-   // Contact(nom: 'Dupont', prenom: 'Jean',mail: 'duponjean@gmail.com',lieux: 'Limoges',numero: 060444565, photo: 'image1.png'),
-   // Contact(nom: 'Dupont', prenom: 'Serge',mail: 'duponsg@gmail.com',lieux: 'Lyon',numero: 060654434, photo: 'image1.png'),
-   // Contact(nom: 'Dupont', prenom: 'Paul',mail: 'duponpl@gmail.com',lieux: 'Bordeaux',numero: 060444432, photo: 'image1.png'),
-   // Contact(nom: 'Jean', prenom: 'Paul',mail: 'jeanpl@gmail.com',lieux: 'Paris',numero: 056545654, photo: 'image1.png'),
-   // Contact(nom: 'Jean', prenom: 'Pierre',mail: 'jeanpr@gmail.com',lieux: 'Limoges',numero: 075990854, photo: 'image1.png'),
-   // Contact(nom: 'Jean', prenom: 'Marie',mail: 'jeanmar@gmail.com',lieux: 'Limoges',numero: 054245543, photo: 'image1.png'),
-   // Contact(nom: 'Jean', prenom: 'DeDieu',mail: 'jeandedieu@gmail.com',lieux: 'Paris',numero: 0588944543, photo: 'image1.png'),
-   // Contact(nom: 'Heme', prenom: 'Biscuit',mail: 'aimebis@gmail.com',lieux: 'Lyon',numero: 0655443435, photo: 'image1.png'),
-   // Contact(nom: 'Heme', prenom: 'Pimpim',mail: 'aimepp@gmail.com',lieux: 'Marseille',numero: 0549022234, photo: 'image1.png'),
-   // Contact(nom: 'Dupont', prenom: 'Jean',mail: 'duponjean@gmail.com',lieux: 'Limoges',numero: 060444565, photo: 'image1.png'),
-   // Contact(nom: 'Dupont', prenom: 'Serge',mail: 'duponsg@gmail.com',lieux: 'Lyon',numero: 060654434, photo: 'image1.png'),
-   // Contact(nom: 'Dupont', prenom: 'Paul',mail: 'duponpl@gmail.com',lieux: 'Bordeaux',numero: 060444432, photo: 'image1.png'),
-   // Contact(nom: 'Jean', prenom: 'Paul',mail: 'jeanpl@gmail.com',lieux: 'Paris',numero: 056545654, photo: 'image1.png'),
-   // Contact(nom: 'Jean', prenom: 'Pierre',mail: 'jeanpr@gmail.com',lieux: 'Limoges',numero: 075990854, photo: 'image1.png'),
-   // Contact(nom: 'Jean', prenom: 'Marie',mail: 'jeanmar@gmail.com',lieux: 'Limoges',numero: 054245543, photo: 'image1.png'),
-   // Contact(nom: 'Jean', prenom: 'DeDieu',mail: 'jeandedieu@gmail.com',lieux: 'Paris',numero: 0588944543, photo: 'image1.png'),
-   // Contact(nom: 'Heme', prenom: 'Biscuit',mail: 'aimebis@gmail.com',lieux: 'Lyon',numero: 0655443435, photo: 'image1.png'),
-   // Contact(nom: 'Heme', prenom: 'Pimpim',mail: 'aimepp@gmail.com',lieux: 'Marseille',numero: 0549022234, photo: 'image1.png'),
-  //];
-
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +27,16 @@ class _ContactListState extends State<ContactList> {
         title: const Text(
           'Mes Contacts',
         ),
-        actions: const <Widget>[
-          Icon(
-            Icons.search,
-          ),
+        actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {
+            showSearch(
+              context: context,
+              delegate: CustomSearchDelegate(),
+            );
+          },
+        ),
           Icon(
             Icons.more_vert
           )
@@ -93,16 +64,13 @@ class _ContactListState extends State<ContactList> {
                         return ListView.builder(
                             itemCount: snapshot.data?.length,
                             itemBuilder: (context, index) => ContactTile(
-
                                 message: snapshot.data![index].nom,
                                 user: snapshot.data![index].prenom,
                                 onPressed: (){
                                   setState(() {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
-                                            builder: (context)=> ContactDetail(nom: snapshot.data![index].nom, prenom: snapshot.data![index].prenom,
-                                                mail: snapshot.data![index].mail, lieux: snapshot.data![index].lieu, numero: int.parse(snapshot.data![index].tel),
-                                                photo: 'image1.png')
+                                            builder: (context)=> ContactDetail(contact: snapshot.data![index])
 
                                         )
                                     );
@@ -117,24 +85,6 @@ class _ContactListState extends State<ContactList> {
                     return const CircularProgressIndicator();
                   }
               ),
-             // ListView.builder(
-              //    padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 4.0),
-               //   itemCount: contacts.length,
-                //  itemBuilder: (context, index) {
-
-                  //  return ContactTile(message: contacts[index].nom, user: contacts[index].prenom, onPressed: (){
-                  //    setState(() {
-                   //     Navigator.of(context).push(
-                    //        MaterialPageRoute(
-                     //           builder: (context)=> ContactDetail(nom: contacts[index].nom, prenom: contacts[index].prenom,
-                     //             mail: contacts[index].mail, lieux: contacts[index].lieux, numero: contacts[index].numero,
-                     //             photo: contacts[index].photo)
-                     //       )
-                     //   );
-                       // Navigator.push(context,MaterialPageRoute(builder: builder))
-                    //  });
-                   // },);
-                  //}),
             ),
             FloatingActionButton(
                 child: const Icon(
@@ -149,4 +99,85 @@ class _ContactListState extends State<ContactList> {
       ),
     );
   }
+
 }
+
+class CustomSearchDelegate extends SearchDelegate {
+  var suggestion = ["ahmed", "ali", "mohammad"];
+  List<String> searchResult = [];
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    searchResult.clear();
+    searchResult =
+        allNames.where((element) => element.startsWith(query)).toList();
+    return Container(
+      margin: EdgeInsets.all(20),
+      child: ListView(
+          padding: EdgeInsets.only(top: 8, bottom: 8),
+          scrollDirection: Axis.vertical,
+          children: List.generate(suggestion.length, (index) {
+            var item = suggestion[index];
+            return Card(
+              color: Colors.white,
+              child: Container(padding: EdgeInsets.all(16), child: Text(item)),
+            );
+          })),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    // This method is called everytime the search term changes.
+    // If you want to add search suggestions as the user enters their search term, this is the place to do that.
+    final suggestionList = query.isEmpty
+        ? suggestion
+        : allNames.where((element) => element.startsWith(query)).toList();
+    return ListView.builder(
+      itemBuilder: (context, index) => ListTile(
+        onTap: () {
+          if (query.isEmpty) {
+            query = suggestion[index];
+          }
+        },
+        leading: Icon(query.isEmpty ? Icons.history : Icons.search),
+        title: RichText(
+            text: TextSpan(
+                text: suggestionList[index].substring(0, query.length),
+                style:
+                TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                children: [
+                  TextSpan(
+                    text: suggestionList[index].substring(query.length),
+                    style: TextStyle(color: Color(0xff727272)),
+                  )
+                ])),
+      ),
+      itemCount: suggestionList.length,
+    );
+  }
+}
+
+
