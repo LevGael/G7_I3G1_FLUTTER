@@ -188,7 +188,9 @@ class CustomSearchDelegate extends SearchDelegate {
                       Contacts Cont = await Contactmain.getcontactsbyname(suggestionList[index]) ;
                        Navigator.of(context).push(
                           MaterialPageRoute(
+
                            builder: (context)=> ContactDetail(contacts: Cont)
+
 
                             )
                         );
