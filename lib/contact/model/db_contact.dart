@@ -56,9 +56,32 @@ class Contactmain {
         mail: maps[i]['mail'],
         lieu: maps[i]['lieu'],
         tel: maps[i]['tel'],
-        photo: maps[i]['photo']
+        photo: maps[i]['photo'],
       );
+
     });
+  }
+
+  static Future<Contacts> getcontactsbyname(String name) async {
+    // Get a reference to the database.
+    List<String> split = name.split(' ');
+    String nom = split[0];
+
+    final db = await getDB();
+    final List<Map<String, dynamic>> maps = await db.query('contacts');
+    List<Map> result = await db.rawQuery('SELECT * FROM Contacts WHERE nom=?', [nom]);
+
+    Contacts contact = Contacts(
+        id: result[0]['id'],
+        nom: result[0]['nom'],
+        prenom: result[0]['prenom'],
+        mail: result[0]['mail'],
+        lieu: result[0]['lieu'],
+        tel: result[0]['tel'],
+        photo: result[0]['photo'],
+    );
+   return contact;
+
   }
 
   static Future<int> getnbenregistrement() async {

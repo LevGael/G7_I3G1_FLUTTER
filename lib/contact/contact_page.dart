@@ -78,7 +78,7 @@ class _ContactListState extends State<ContactList> {
                                   setState(() {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
-                                            builder: (context)=> ContactDetail(contact: snapshot.data![index])
+                                            builder: (context)=> ContactDetail(contacts: snapshot.data![index])
 
                                         )
                                     );
@@ -111,7 +111,7 @@ class _ContactListState extends State<ContactList> {
 }
 
 class CustomSearchDelegate extends SearchDelegate {
-  var suggestion = ["ahmed", "ali", "mohammad"];
+  var suggestion = [];
   List<String> searchResult = [];
 
   @override
@@ -162,12 +162,14 @@ class CustomSearchDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     // This method is called everytime the search term changes.
     // If you want to add search suggestions as the user enters their search term, this is the place to do that.
+    debugPrint(allNames.length.toString());
     final suggestionList = query.isEmpty
         ? suggestion
         : allNames.where((element) => element.startsWith(query)).toList();
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
         onTap: () {
+
           if (query.isEmpty) {
             query = suggestion[index];
           }
@@ -180,24 +182,30 @@ class CustomSearchDelegate extends SearchDelegate {
                 TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                 children: [
                   TextSpan(
-                    recognizer: TapGestureRecognizer()..onTap = () {
+                    recognizer: TapGestureRecognizer()..onTap = () async {
 
-                      //  Navigator.of(context).push(
-                        //    MaterialPageRoute(
-                          //      builder: (context)=> ContactDetail(contact: "snapshot.data![index]")
 
-                            //)
-                        //);
-                        // Navigator.push(context,MaterialPageRoute(builder: builder))
+                      Contacts Cont = await Contactmain.getcontactsbyname(suggestionList[index]) ;
+                       Navigator.of(context).push(
+                          MaterialPageRoute(
+                           builder: (context)=> ContactDetail(contacts: Cont)
+
+                            )
+                        );
+                         //Navigator.push(context,MaterialPageRoute(builder: builder))
 
                     },
                     text: suggestionList[index].substring(query.length),
                     style: TextStyle(color: Color(0xff727272)),
                   )
                 ])),
+
       ),
+
       itemCount: suggestionList.length,
+
     );
+
   }
 }
 

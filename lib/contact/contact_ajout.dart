@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'contact_page.dart';
 import 'model/db_contact.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 
 class ContactAjouter extends StatefulWidget {
   final Contacts? contact;
@@ -11,8 +12,9 @@ class ContactAjouter extends StatefulWidget {
 
   Contacts? Getcontact()
   {
-   return contact;
+    return contact;
   }
+
 
   @override
   State<ContactAjouter> createState() => _ContactAjouterState();
@@ -79,7 +81,6 @@ class _ContactAjouterState extends State<ContactAjouter> {
         });
   }
 
- // List<Contact> contacts = [];
   Contacts? contact = const ContactAjouter().Getcontact();
   @override
   Widget build(BuildContext context) {
@@ -89,13 +90,13 @@ class _ContactAjouterState extends State<ContactAjouter> {
     final mailController = TextEditingController();
     final lieuController = TextEditingController();
     final telController = TextEditingController();
+    final photoController = TextEditingController();
     if(contact != null){
       nomController.text = contact!.nom;
       prenomController.text = contact!.prenom;
       mailController.text = contact!.mail;
       lieuController.text = contact!.lieu;
       telController.text = contact!.tel.toString();
-
     }
 
     return Scaffold(
@@ -107,129 +108,139 @@ class _ContactAjouterState extends State<ContactAjouter> {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.8),
-        child: Column(
-          children: <Widget>[
-            image != null
-                ? GestureDetector(
-              onTap: () {
-                myAlert();
-              }, // Image tapped
-              child: Image.file(
-                File(image!.path),
-                fit: BoxFit.cover, // Fixes border issues
-                width: 110.0,
-                height: 110.0,
-              ),
-            )
-                : GestureDetector(
-              onTap: () {
-                myAlert();
-              }, // Image tapped
-              child: Image.asset(
-                'assets/image1.png',
-                fit: BoxFit.cover, // Fixes border issues
-                width: 110.0,
-                height: 110.0,
-              ),
-            ),
-             Expanded(
-              child: TextField(
-                keyboardType: TextInputType.phone,
-                controller: telController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Numéro de téléphone',
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 50.0),
+          //padding: const EdgeInsets.all(8.8),
+          child: Form(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                    padding: const EdgeInsets.all(9),
+                    child:ClipOval( //no need to provide border radius to make circular image
+                      child: image != null
+                          ? GestureDetector(
+                        onTap: () {
+                          myAlert();
+                        }, // Image tapped
+                        child: Image.file(
+                          File(image!.path), // Fixes border issues
+                          width: 150.0,
+                          height: 150.0,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                          : GestureDetector(
+                        onTap: () {
+                          myAlert();
+                        }, // Image tapped
+                        child: Image.asset(
+                          'assets/image1.png', // Fixes border issues
+                          width: 150.0,
+                          height: 150.0,
+                          fit:BoxFit.cover,
+                        ),
+                      ),
+                    )
                 ),
-              ),
-            ),
-            Expanded(
-              child: TextField(
-                keyboardType: TextInputType.text,
-                controller: nomController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Votre nom',
-                ),
-              ),
-            ),
-            Expanded(
-              child: TextField(
-                keyboardType: TextInputType.text,
-                controller: prenomController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Prenom',
-                ),
-              ),
-            ),
-            Expanded(
-              child: TextField(
-                keyboardType: TextInputType.emailAddress,
-                controller: mailController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Adresse mail',
-                ),
-              ),
-            ),
-            Expanded(
-              child: TextField(
-                keyboardType: TextInputType.text,
-                controller: lieuController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Adresse postal, lieux',
 
-                ),
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.all(40.0),
-                child: TextButton(
-                  style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white70),
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.lightBlue),
+                const SizedBox(height: 10),
+                TextFormField(
+                  keyboardType: TextInputType.phone,
+                  controller: telController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Numéro de téléphone',
                   ),
-                  onPressed: () async {
-                    final nom = nomController.value.text;
-                    final prenom = prenomController.value.text;
-                    final mail = mailController.value.text;
-                    final lieu = lieuController.value.text;
-                    final tel = telController.value.text;
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  controller: nomController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Votre nom',
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  controller: prenomController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Prenom',
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  controller: mailController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Adresse mail',
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  controller: lieuController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Adresse postal, lieux',
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Card(
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    ),
+                    onPressed: () async {
+                      final nom = nomController.value.text;
+                      final prenom = prenomController.value.text;
+                      final mail = mailController.value.text;
+                      final lieu = lieuController.value.text;
+                      final tel = telController.value.text;
 
-                    if(nom.isEmpty || prenom.isEmpty || mail.isEmpty || lieu.isEmpty || tel.isEmpty ){
-                      return;
-                    }
-                    final Contacts model;
-                    if(image != null) {
-                      model = Contacts(nom: nom,
-                          prenom: prenom,
-                          mail: mail,
-                          lieu: lieu,
-                          tel: tel,
-                          photo: image!.path,
-                          id: contact?.id);
-                    } else {
-                       model = Contacts(nom: nom,
-                          prenom: prenom,
-                          mail: mail,
-                          lieu: lieu,
-                          tel: tel,
-                          photo: "default",
-                          id: contact?.id);
-                    }
+                      if(nom.isEmpty || prenom.isEmpty || mail.isEmpty || lieu.isEmpty || tel.isEmpty ){
+                        return;
+                      }
+                      final Contacts model;
+                      if(image != null) {
+                        model = Contacts(nom: nom,
+                            prenom: prenom,
+                            mail: mail,
+                            lieu: lieu,
+                            tel: tel,
+                            photo: image!.path,
+                            id: contact?.id);
+                      } else {
+                        model = Contacts(nom: nom,
+                            prenom: prenom,
+                            mail: mail,
+                            lieu: lieu,
+                            tel: tel,
+                            photo: "default",
+                            id: contact?.id);
+                      }
+
                       await Contactmain.insertContact(model);
 
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context)=> const ContactList()));
-                  },
-                  child: Text('Ajouter'),
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context)=> const ContactList()));
+                    },
+                    child: const Text('Ajouter', style: TextStyle(fontSize: 20),),
+                  ),
                 )
-            )
-          ],
+
+              ],
+            ),
+
+          ),
         ),
+
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
